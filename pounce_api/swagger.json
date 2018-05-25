@@ -1,0 +1,331 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "thing": "Thing API",
+    "description": "Provides RESTful API access to Thing resources in JSON representation"
+  },
+  "host": "thing-api:8080",
+  "basePath": "/v1",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/things": {
+      "get": {
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "type": "string",
+            "description": "Search query",
+            "required": false
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "type": "integer",
+            "description": "Number of results returned per page",
+            "required": false,
+            "default": 10,
+            "format": "int32"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "integer",
+            "description": "Page number",
+            "required": true,
+            "default": 1,
+            "format": "int32",
+            "minimum": 1
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string",
+            "description": "Field to sort by",
+            "default": "created_at",
+            "required": false
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "description": "Ascending or descending sort order",
+            "default": "asc",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of things",
+            "schema": {
+              "thing": "things",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ThingResponse"
+              }
+            }
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "name": "thing",
+            "in": "body",
+            "description": "The thing to be created",
+            "schema": {
+              "$ref": "#/definitions/ThingRequest"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thing has been created",
+            "schema": {
+              "$ref": "#/definitions/ThingResponse"
+            },
+            "headers": {
+              "Location": {
+                "description": "The location of the newly created thing",
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          },
+          "415": {
+            "$ref": "#/responses/415"
+          },
+          "422": {
+            "$ref": "#/responses/422"
+          }
+        }
+      }
+    },
+    "/things/{thing_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "thing_id",
+            "in": "path",
+            "type": "string",
+            "description": "ID of a thing",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thing has been retrieved",
+            "schema": {
+              "$ref": "#/definitions/ThingResponse"
+            }
+          },
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          }
+        }
+      },
+      "put": {
+        "parameters": [
+          {
+            "name": "thing",
+            "in": "body",
+            "description": "The thing to be updated",
+            "schema": {
+              "$ref": "#/definitions/ThingRequest"
+            },
+            "required": true
+          },
+          {
+            "name": "thing_id",
+            "in": "path",
+            "type": "string",
+            "description": "ID of a thing",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thing has been updated",
+            "schema": {
+              "$ref": "#/definitions/ThingResponse"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          },
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          },
+          "415": {
+            "$ref": "#/responses/415"
+          },
+          "422": {
+            "$ref": "#/responses/422"
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "name": "thing",
+            "in": "body",
+            "description": "The thing to be patched",
+            "schema": {
+              "$ref": "#/definitions/ThingRequest"
+            },
+            "required": true
+          },
+          {
+            "name": "thing_id",
+            "in": "path",
+            "type": "string",
+            "description": "ID of a thing",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thing has been patched",
+            "schema": {
+              "$ref": "#/definitions/ThingResponse"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/400"
+          },
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          },
+          "415": {
+            "$ref": "#/responses/415"
+          },
+          "422": {
+            "$ref": "#/responses/422"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "thing_id",
+            "in": "path",
+            "type": "string",
+            "description": "ID of a thing",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Thing has been deleted"
+          },
+          "404": {
+            "$ref": "#/responses/404"
+          },
+          "405": {
+            "$ref": "#/responses/405"
+          },
+          "406": {
+            "$ref": "#/responses/406"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "400": {
+      "description": "Bad request"
+    },
+    "404": {
+      "description": "Thing not found"
+    },
+    "405": {
+      "description": "Method not allowed"
+    },
+    "406": {
+      "description": "Not acceptable"
+    },
+    "415": {
+      "description": "Unsupported media type"
+    },
+    "422": {
+      "description": "Validation error"
+    }
+  },
+  "definitions": {
+    "ThingRequest": {
+      "type": "object",
+      "properties": {
+        "foo": {
+          "type": "string"
+        },
+        "bar": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "foo",
+        "bar"
+      ]
+    },
+    "ThingResponse": {
+      "type": "object",
+      "properties": {
+        "thing_id": {
+          "type": "string"
+        },
+        "foo": {
+          "type": "string"
+        },
+        "bar": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
