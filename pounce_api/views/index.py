@@ -1,8 +1,6 @@
 from flask import Blueprint, request, redirect, url_for, render_template
-import requests
 import json
-import urllib.parse as urlparse
-from pounce_api.views.pounce_v1 import getpounces, create_pounce
+from pounce_api.views.pounce_v1 import getpounces, create_pounce, get_pounce, update_pounce, delete_pounce
 
 # This is the blueprint object that gets registered into the app in blueprints.py.
 index = Blueprint('index', __name__)
@@ -23,12 +21,12 @@ def index_page():
 
     pounces = json.loads(response)
 
-    if pounces['links']['prev'] == None:
+    if pounces['links']['prev'] is None:
         prev = None
     else:
         prev = pounces['links']['prev'].replace("v1/pounces", "")
 
-    if pounces['links']['next'] == None:
+    if pounces['links']['next'] is None:
         next = None
     else:
         next = pounces['links']['next'].replace("v1/pounces", "")
@@ -38,13 +36,35 @@ def index_page():
 
     return render_template('index.html', **locals())
 
-@index.route("/new-pounce", methods=['GET', 'POST'])
+
+@index.route("/add-pounce", methods=['GET', 'POST'])
 def new_pounce():
     if request.method == 'GET':
         return render_template('add_pounce.html')
-        # return render_template('new_pounce.html')
     else:
         fd = request.form.to_dict()
 
         create_pounce(fd)
         return redirect(url_for('index.index_page'))
+
+
+@index.route("/edit-pounce", methods=['GET', 'POST'])
+def edit_pounce():
+    args = request.args.to_dict()
+
+    if request.method == 'GET':
+        pounce = get_pounce(args['id'])
+        return render_template('edit_pounce.html', pounce=pounce)
+    else:
+        fd = request.form.to_dict()
+        fd['id'] = args['id']
+        update_pounce(fd)
+        return redirect(url_for('index.index_page'))
+
+
+@index.route('/delete-pounce', methods=['POST'])
+def remove_pounce():
+    args = request.form.to_dict()
+
+    delete_pounce(args['id'])
+    return redirect(url_for('index.index_page'))

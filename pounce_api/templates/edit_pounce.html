@@ -3,12 +3,10 @@
 <!-- HTML Form (wrapped in a .bootstrap-iso div) -->
 <div class="bootstrap-iso">
     <div class="container-fluid">
-        <!-- <a href="/">View All Pounces</a> -->
-        <!-- <br/> -->
         <br/>
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12">
-                <form class="form-horizontal" action="/add-pounce" method="post">
+                <form class="form-horizontal" action="/edit-pounce?id={{ pounce.id }}" method="post">
                     <div class="form-group ">
                         <label class="control-label col-sm-2 requiredField" for="placed">Placed</label>
                         <div class="col-sm-10">
@@ -16,28 +14,33 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input class="form-control" id="placed" name="placed" type="text" required="required">
+                                <input class="form-control" id="placed" name="placed" type="text" required="required" value="{{ pounce.placed }}">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="rating" class="control-label col-sm-2">Rating</label>
                         <div class="col-sm-10">
-                            <input id="rating" name="rating" type="text" class="form-control" required="required">
+                            <input id="rating" name="rating" type="text" class="form-control" required="required" value="{{ pounce.rating }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="bet" class="control-label col-sm-2">Bet</label>
                         <div class="col-sm-10">
-                            <input id="bet" name="bet" type="text" class="form-control" required="required">
+                            <input id="bet" name="bet" type="text" class="form-control" required="required" value="{{ pounce.bet }}">
                         </div>
                     </div>
                     <div class="form-group ">
                         <label class="control-label col-sm-2 requiredField" for="sport">Sport</label>
                         <div class="col-sm-10">
                             <select class="select form-control" id="sport" name="sport">
-                                <option value="Tennis">Tennis</option>
+                                {% if pounce.sport == 'Tennis': %}
+                                <option value="Tennis" selected>Tennis</option>
                                 <option value="Football">Football</option>
+                                {% else: %}
+                                <option value="Tennis">Tennis</option>
+                                <option value="Football" selected>Football</option>
+                                {% endif %}
                             </select>
                         </div>
                     </div>
@@ -45,8 +48,13 @@
                         <label class="control-label col-sm-2 requiredField" for="pounced">Pounced</label>
                         <div class="col-sm-10">
                             <select class="select form-control" id="pounced" name="pounced">
-                                <option value="True">True</option>
+                                {% if pounce.pounced == True: %}
+                                <option value="True" selected>True</option>
                                 <option value="False">False</option>
+                                {% else: %}
+                                <option value="True">True</option>
+                                <option value="False" selected>False</option>
+                                {% endif %}
                             </select>
                         </div>
                     </div>
@@ -54,17 +62,33 @@
                         <label for="profit" class="control-label col-sm-2">Profit</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <div class="input-group-addon">£</div> 
-                                <input id="profit" name="profit" type="text" class="form-control">
+                                <div class="input-group-addon">£</div>
+                                {% if pounce.profit != None: %}
+                                    <input id="profit" name="profit" type="text" class="form-control" value="{{ '%0.2f' % pounce.profit|float }}">
+                                {% else: %}
+                                    <input id="profit" name="profit" type="text" class="form-control" value=" ">
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-10 col-sm-offset-2">
-                            <button class="btn btn-success btn-block" name="submit" type="submit">Add</button>
+                            <button class="btn btn-success btn-block" name="submit" type="submit"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </div>
                 </form>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <form class="form-horizontal" action="/delete-pounce?id={{ pounce.id}}" method="post">
+                        <div class="form-group ">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <input type="hidden" name="id" value="{{ pounce.id }}">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');"><i class="fa fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -79,6 +103,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
 />
+
 
 <script>
     $(document).ready(function () {

@@ -1,94 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
+ {% extends "base.html" %} {% block content %}
 
-<head>
-    <title>pounces</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-</head>
+<div class="container">
+    <!-- <h2>Pounces</h2>
+    <a href="/add-pounce">New Pounce</a> -->
 
-<body>
-
-    <div class="container">
-        <h2>Pounces</h2>
-        <a href="/new-pounce">New Pounce</a>
-        
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Sport</th>
-                    <th>Bet</th>
-                    <th>Rating</th>
-                    <th>Pounced</th>
-                    <th>Profit</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pounce in pounces['pounces'] %}
-                <tr>
-                    <td>{{ pounce['id'] }}</td>
-                    <td>{{ pounce['placed'] }}</td>
-                    <td>{{ pounce['sport'] }}</td>
-                    <td>{{ pounce['bet'] }}</td>
-                    <td>{{ pounce['rating'] }}</td>
-                    <td>{{ pounce['pounced'] }}</td>
-                    {% if pounce['profit'] != "None": %}
-                        <!-- <td>{{ ("£" + pounce['profit']).replace('£-','-£') }}</td> -->
-                        <td>{{ '%0.2f' % pounce['profit']|float }}</td>
-                    {% else: %}
-                        <td></td>
-                    {% endif %}
-                    <!-- <td>{{ pounce['profit'] }}</td> -->
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-12 text-center">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                {% if prev == None: %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="{{ first }}"><<</a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Previous</a>
-                </li>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Sport</th>
+                <th>Bet</th>
+                <th>Rating</th>
+                <th>Pounced</th>
+                <th>Profit</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pounce in pounces['pounces'] %}
+            <tr>
+                <td>{{ pounce['placed'] }}</td>
+                <td>{{ pounce['sport'] }}</td>
+                <td>{{ pounce['bet'] }}</td>
+                <td>{{ pounce['rating'] }}</td>
+                <td>{{ pounce['pounced'] }}</td>
+                {% if pounce['profit'] != "None": %}
+                <td>{{ ("£" + '%0.2f' % pounce['profit']|float).replace('£-','-£') }}</td>
                 {% else: %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ first }}"><<</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="{{ prev }}">Previous</a>
-                </li>
+                <td></td>
                 {% endif %}
-                <li class="page-item">
-                    <a class="page-link">{{ curr_page }}</a>
-                </li>
-                {% if next == None: %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="{{ last }}">>></a>
-                </li>
-                {% else: %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ next }}">Next</a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="{{ last }}">>></a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-</body>
+                <td>
+                    <a href="/edit-pounce?id={{ pounce['id'] }}">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-md-12 text-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if prev == None: %}
+            <li class="page-item disabled">
+                <a class="page-link" href="{{ first }}">
+                    <<</a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Previous</a>
+            </li>
+            {% else: %}
+            <li class="page-item">
+                <a class="page-link" href="{{ first }}">
+                    <<</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{{ prev }}">Previous</a>
+            </li>
+            {% endif %}
+            <li class="page-item">
+                <a class="page-link">{{ curr_page }}</a>
+            </li>
+            {% if next == None: %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Next</a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="{{ last }}">>></a>
+            </li>
+            {% else: %}
+            <li class="page-item">
+                <a class="page-link" href="{{ next }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{{ last }}">>></a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
 
-</html>
+{% endblock %}
+<!-- </body>
+
+</html> -->

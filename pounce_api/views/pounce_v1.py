@@ -2,7 +2,6 @@ from flask import Blueprint, Response, request, url_for
 from pounce_api.extensions import db
 from pounce_api.models import Pounce
 from pounce_api.exceptions import ApplicationError
-from flask_negotiate import consumes, produces
 from datetime import datetime
 # from jsonschema import validate, ValidationError, FormatChecker
 import json
@@ -10,24 +9,14 @@ import json
 # This is the blueprint object that gets registered into the app in blueprints.py.
 pounce_v1 = Blueprint('pounce_v1', __name__)
 
-# JSON schema for pounce requests
-# with open('pounce_api/swagger.json') as json_file:
-#     swagger = json.load(json_file)
-
-# pounce_schema = swagger["definitions"]["PounceRequest"]
-
-
-# @pounce_v1.route("/pounces", methods=['GET'])
-# @produces('application/json')
 def getpounces():
     """Get Pounces."""
-    print('get_pounces')
     results = Pounce.query.order_by(Pounce.id.desc()).paginate(per_page=10)
     pounces = []
-    print('1')
+
     for pounce in results.items:
         pounces.append(pounce.as_dict())
-    print('2')
+
     first = request.args.to_dict()
     first["page"] = 1
 
@@ -73,23 +62,10 @@ def getpounces():
     }
 
     return json.dumps(response, separators=(',', ':'))
-    # return Response(response=json.dumps(response, separators=(',', ':')),
-    #                 mimetype='application/json',
-    #                 status=200)
 
 
-# @pounce_v1.route("/pounces", methods=['POST'])
-# @consumes("application/json")
-# @produces('application/json')
 def create_pounce(pounce_request):
     """Create a new Pounce."""
-    # pounce_request = request.json
-    print(pounce_request)
-    # Validate request against schema
-    # try:
-    #     validate(pounce_request, pounce_schema, format_checker=FormatChecker())
-    # except ValidationError as e:
-    #     raise ApplicationError(str(e), "E001", 400)
 
     # Create a new pounce
     placed = datetime.strptime(pounce_request["placed"], "%Y-%m-%d")
@@ -116,52 +92,35 @@ def create_pounce(pounce_request):
     return response
 
 
-@pounce_v1.route("/pounces/<int:pounce_id>", methods=['GET'])
-@produces('application/json')
 def get_pounce(pounce_id):
     """Get a Pounce for a given pounce_id."""
     pounce = Pounce.query.filter_by(id=str(pounce_id)).first()
     if not pounce:
         raise ApplicationError('Pounce not found', 'Exxx', 404)
 
-    return Response(response=repr(pounce),
-                    mimetype='application/json',
-                    status=200)
+    return pounce
 
 
-@pounce_v1.route("/pounces/<int:pounce_id>", methods=['PUT'])
-@consumes("application/json")
-@produces('application/json')
-def update_pounce(pounce_id):
+def update_pounce(updated_pounce):
     """Update a Pounce for a given pounce_id."""
-    pounce_request = request.json
 
-    # try:
-    #     validate(pounce_request, pounce_schema, format_checker=FormatChecker())
-    # except ValidationError as e:
-    #     raise ApplicationError(str(e), "E001", 400)
-
-    pounce = Pounce.query.filter_by(id=pounce_id).first()
+    pounce = Pounce.query.filter_by(id=updated_pounce['id']).first()
     if not pounce:
         raise ApplicationError('Pounce not found', 'Exxx', 404)
 
-    pounce.placed = pounce_request["placed"]
-    pounce.rating = pounce_request["rating"]
-    pounce.bet = pounce_request["bet"]
-    pounce.sport = pounce_request["sport"]
-    pounce.pounced = pounce_request["pounced"]
-    pounce.profit = pounce_request["profit"]
+    pounce.placed = updated_pounce["placed"]
+    pounce.rating = updated_pounce["rating"]
+    pounce.bet = updated_pounce["bet"]
+    pounce.sport = updated_pounce["sport"]
+    pounce.pounced = updated_pounce["pounced"] == "True"
+    pounce.profit = updated_pounce["profit"]
 
     db.session.add(pounce)
     db.session.commit()
 
-    return Response(response=repr(pounce),
-                    mimetype='application/json',
-                    status=200)
+    return pounce
 
 
-@pounce_v1.route("/pounces/<int:pounce_id>", methods=['DELETE'])
-@produces('application/json')
 def delete_pounce(pounce_id):
     """Delete a Pounce for a given pounce_id."""
     pounce = Pounce.query.filter_by(id=pounce_id).first()
@@ -171,6 +130,4 @@ def delete_pounce(pounce_id):
     db.session.delete(pounce)
     db.session.commit()
 
-    return Response(response=None,
-                    mimetype='application/json',
-                    status=204)
+    return None

@@ -26,7 +26,10 @@ class Pounce(db.Model):
         if profit == '':
             self.profit = None
         else:
-            self.profit = float(profit)
+            if float(profit) > 0:
+                self.profit = float(profit) * 0.95
+            else:
+                self.profit = float(profit)
 
     def __repr__(self):
         return json.dumps(self.as_dict(), separators=(',', ':'))
