@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %}
+<br>
+<div class="row">
+    <div class="col-sm-1">
+    </div>
+    <div class="col-sm-3">
+        <table class="table table-condensed table-bordered table-sm">
+            <thead class="thead-light">
+                <tr>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in report.items(): %}
+                <!-- <tr>
+                    <td>{{ key }}</td>
+                    <td></td>
+                    <td></td>
+                </tr> -->
+                    {% for k, v in value.items(): %} 
+                        {% if loop.index == 1: %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ k }}</td>
+                            <td>{{ v }}</td>
+                        </tr>
+                        {% else: %}
+                        <tr>
+                            <td></td>
+                            <td>{{ k }}</td>
+                            <td>{{ v }}</td>
+                        </tr>
+                        {% endif %} 
+                    {% endfor %} 
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-8">
+    </div>
+</div>
+
+{% endblock %}

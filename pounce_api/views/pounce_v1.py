@@ -6,8 +6,48 @@ from datetime import datetime
 # from jsonschema import validate, ValidationError, FormatChecker
 import json
 
+from sqlalchemy import func
+from sqlalchemy.sql import label
+
 # This is the blueprint object that gets registered into the app in blueprints.py.
 pounce_v1 = Blueprint('pounce_v1', __name__)
+
+
+def getsum():
+    # results = Pounce.query.filter_by(func.sum(Pounce.profit)).all()
+    mon = func.date_trunc('month', Pounce.placed)
+    yea = func.date_trunc('year', Pounce.placed)
+
+    results = db.session.query(mon, func.sum(Pounce.profit)) \
+                               .group_by(yea, mon) \
+                               .order_by(yea, mon) \
+                               .all()
+    # results = db.session.query.filter_by(Pounce.rating>60)
+    # q = db.session.query(Pounce).filter(Pounce.rating>60).first()
+    # results = q.query(func.sum(Pounce.profit)).all()
+
+
+    # queries = [Pounce.rating > 60]
+    # queries.append(Pounce.sport=="Tennis")
+
+    # results = db.session.query(
+    #     func.sum(Pounce.profit)
+    # ).filter(
+    #     *queries
+    #     # Pounce.rating>60
+    # ).scalar()
+    reports = {}
+
+    for result in results:
+        if result[0].strftime("%Y") in reports:
+            reports[result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
+        else:
+            reports[result[0].strftime("%Y")] = {}
+            reports[result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
+        # print(result[0].strftime("%B"))
+        # print(str(round(result[1], 2)))
+
+    return reports
 
 def getpounces():
     """Get Pounces."""

@@ -1,9 +1,6 @@
  {% extends "base.html" %} {% block content %}
 
-<div class="container">
-    <!-- <h2>Pounces</h2>
-    <a href="/add-pounce">New Pounce</a> -->
-
+<div class="container-fluid">
     <table class="table table-condensed">
         <thead>
             <tr>
@@ -44,16 +41,14 @@
         <ul class="pagination">
             {% if prev == None: %}
             <li class="page-item disabled">
-                <a class="page-link" href="{{ first }}">
-                    <<</a>
+                <a class="page-link" href="{{ first }}"><<</a>
             </li>
             <li class="page-item disabled">
                 <a class="page-link" href="#">Previous</a>
             </li>
             {% else: %}
             <li class="page-item">
-                <a class="page-link" href="{{ first }}">
-                    <<</a>
+                <a class="page-link" href="{{ first }}"><<</a>
             </li>
             <li class="page-item">
                 <a class="page-link" href="{{ prev }}">Previous</a>
@@ -82,6 +77,3 @@
 </div>
 
 {% endblock %}
-<!-- </body>
-
-</html> -->
