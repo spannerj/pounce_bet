@@ -1,30 +1,18 @@
 from flask import Blueprint, request, redirect, url_for, render_template
 import json
-from pounce_api.views.pounce_v1 import getpounces, create_pounce, get_pounce, update_pounce, delete_pounce, getsum
+from pounce_api.views.pounce_v1 import getpounces, create_pounce, get_pounce, update_pounce, delete_pounce, get_reports
 
 # This is the blueprint object that gets registered into the app in blueprints.py.
 index = Blueprint('index', __name__)
 
 
-@index.route("/test_sql", methods=['GET'])
-def test_sql():
-    getsum()
-    return 'Done'
-
-
 @index.route("/reports", methods=['GET'])
 def reports():
-    report = getsum()
-    # print(report)
-    for key, value in report.items():
-        print(key)
-        for k, v in value.items():
-            print(k)
-            print(v)
-
+    report = get_reports()
     return render_template('reports.html', report=report)
 
 
+@index.route("/", methods=['GET'])
 @index.route("/pounces", methods=['GET'])
 def index_page():
     args = request.args.to_dict()
