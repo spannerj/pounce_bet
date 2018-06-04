@@ -1,101 +1,105 @@
 {% extends "base.html" %} {% block content %}
-<br>
-<div class="row">
-    <div class="col-sm-1">
-    </div>
-    <div class="col-sm-3">
-        <h4>All pounce totals</h4>
-        <table class="table table-condensed table-bordered table-sm">
-            <thead class="thead-light">
-                <tr>
-                    <th>Year</th>
-                    <th>Month</th>
-                    <th>Profit</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for year, months in report['all'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %} {%
-                if loop.index == 1: %}
-                <tr>
-                    <td>{{ year }}</td>
-                    <td>{{ month }}</td>
-                    {% if "-" in profit: %}
-                    <td class="text-danger" style="text-align: right">
+<div class="bootstrap-iso">
+    <div class="container-fluid">
+        <br>
+        <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-3">
+                <h4>All pounce totals</h4>
+                <table class="table table-condensed table-bordered table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for year, months in report['all'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %} {%
+                        if loop.index == 1: %}
+                        <tr>
+                            <td>{{ year }}</td>
+                            <td>{{ month }}</td>
+                            {% if "-" in profit: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                        </tr>
                         {% else: %}
-                        <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                </tr>
-                {% else: %}
-                <tr>
-                    <td></td>
-                    <td>{{ month }}</td>
-                    {% if "-" in profit: %}
-                    <td class="text-danger" style="text-align: right">
-                        {% else: %}
-                        <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                </tr>
-                {% endif %} {% endfor %} {% else: %}
-                <tr>
-                    <td colspan="2">Total Profit</td>
-                    {% if "-" in months: %}
-                    <td class="text-danger" style="text-align: right">
-                        {% else: %}
-                        <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
-                </tr>
-                {% endif %} {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                        <tr>
+                            <td></td>
+                            <td>{{ month }}</td>
+                            {% if "-" in profit: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% endif %} {% endfor %} {% else: %}
+                        <tr>
+                            <td colspan="2">Total Profit</td>
+                            {% if "-" in months: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% endif %} {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-    <div class="col-sm-3">
-        <h4>My pounce totals</h4>
-        <table class="table table-condensed table-bordered table-sm">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Year</th>
-                        <th>Month</th>
-                        <th>Profit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for year, months in report['mine'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %} {%
-                    if loop.index == 1: %}
-                    <tr>
-                        <td>{{ year }}</td>
-                        <td>{{ month }}</td>
-                        {% if "-" in profit: %}
-                        <td class="text-danger" style="text-align: right">
-                            {% else: %}
-                            <td class="text-success" style="text-align: right">
-                                {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                    </tr>
-                    {% else: %}
-                    <tr>
-                        <td></td>
-                        <td>{{ month }}</td>
-                        {% if "-" in profit: %}
-                        <td class="text-danger" style="text-align: right">
-                            {% else: %}
-                            <td class="text-success" style="text-align: right">
-                                {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                    </tr>
-                    {% endif %} {% endfor %} {% else: %}
-                    <tr>
-                        <td colspan="2">Total Profit</td>
-                        {% if "-" in months: %}
-                        <td class="text-danger" style="text-align: right">
-                            {% else: %}
-                            <td class="text-success" style="text-align: right">
-                                {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
-                    </tr>
-                    {% endif %} {% endfor %}
-                </tbody>
-            </table>
+            <div class="col-sm-3">
+                <h4>My pounce totals</h4>
+                <table class="table table-condensed table-bordered table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for year, months in report['mine'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %}
+                        {% if loop.index == 1: %}
+                        <tr>
+                            <td>{{ year }}</td>
+                            <td>{{ month }}</td>
+                            {% if "-" in profit: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% else: %}
+                        <tr>
+                            <td></td>
+                            <td>{{ month }}</td>
+                            {% if "-" in profit: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% endif %} {% endfor %} {% else: %}
+                        <tr>
+                            <td colspan="2">Total Profit</td>
+                            {% if "-" in months: %}
+                            <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% endif %} {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-4">
+            </div>
         </div>
-
-    <div class="col-sm-4">
     </div>
 </div>
 
