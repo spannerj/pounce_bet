@@ -75,7 +75,7 @@ def get_reports():
 
 def getpounces():
     """Get Pounces."""
-    results = Pounce.query.order_by(Pounce.id.desc()).paginate(per_page=10)
+    results = Pounce.query.order_by(Pounce.placed.desc()).paginate(per_page=10)
     pounces = []
 
     for pounce in results.items:
