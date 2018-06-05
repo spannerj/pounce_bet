@@ -40,8 +40,6 @@ def run_migrations_offline():
     script output.
 
     """
-    print('XXXXXXXXXXX')
-    print('offline')
     url = config.get_main_option("sqlalchemy.url")
     context.configure(url=url)
 
@@ -56,8 +54,6 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    print('XXXXXXXXXXX')
-    print('online')
     # this callback is used to prevent an auto-migration from being generated
     # when there are no changes to the schema
     # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
@@ -67,8 +63,7 @@ def run_migrations_online():
             if script.upgrade_ops.is_empty():
                 directives[:] = []
                 logger.info('No changes in schema detected.')
-    print('********')
-    print(config.get_section(config.config_ini_section))
+
 
     engine = engine_from_config(config.get_section(config.config_ini_section),
                                 prefix='sqlalchemy.',

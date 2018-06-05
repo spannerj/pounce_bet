@@ -2,11 +2,12 @@
 <div class="bootstrap-iso">
     <div class="container-fluid">
         <br>
+        <h2>Totals</h2>
         <div class="row">
             <div class="col-sm-1">
             </div>
             <div class="col-sm-3">
-                <h4>All pounce totals</h4>
+                <h4>All pounces</h4>
                 <table class="table table-condensed table-bordered table-sm">
                     <thead class="thead-light">
                         <tr>
@@ -52,7 +53,7 @@
             </div>
 
             <div class="col-sm-3">
-                <h4>My pounce totals</h4>
+                <h4>My pounces</h4>
                 <table class="table table-condensed table-bordered table-sm">
                     <thead class="thead-light">
                         <tr>
@@ -107,15 +108,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for k, v in report['rating']: %} 
-                        <tr>
-                            <td>{{ k }}</td>
-                            {% if "-" in v: %}
-                                <td class="text-danger" style="text-align: right">
-                            {% else: %}
-                                <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % v|float).replace('£-','-£') }}</td>
-                        </tr>
+                        {% for item in report['rating']: %} 
+                            {% for k, v in item.items(): %} 
+                            <tr>
+                                <td>{{ k }}</td>
+                                {% if "-" in v: %}
+                                    <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                    <td class="text-success" style="text-align: right">
+                                {% endif %} {{ ("£" + '%0.2f' % v|float).replace('£-','-£') }}</td>
+                            </tr>
+                            {% endfor %} 
                         {% endfor %} 
                     </tbody>
                 </table>
@@ -124,6 +127,8 @@
             <div class="col-sm-1">
             </div>
         </div>
+ 
+        <h2>Tennis</h2>
     </div>
 </div>
 

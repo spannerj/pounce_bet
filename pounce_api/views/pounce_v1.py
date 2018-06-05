@@ -35,7 +35,7 @@ def get_reports():
     rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit),], else_ = 0)).label("r3")
     rate4 = func.sum(case([(between(Pounce.rating, 80, 99), Pounce.profit),], else_ = 0)).label("r4")
     rating_results = db.session.query(rate1, rate2, rate3, rate4).all()
-    print(rating_results)
+ 
     # print(rating_results.r1)
    
     # results = db.session.query.filter_by(Pounce.rating>60)
@@ -58,10 +58,8 @@ def get_reports():
     reports['rating'] = []
     all_profit_total = 0
     my_profit_total = 0
-    print(reports)
 
     for i, result in enumerate(rating_results[0]):
-        print(type(result))
         rating_profit = str(round(result, 2))
         d = {}
         if i == 0:
@@ -95,7 +93,10 @@ def get_reports():
 
     reports['mine']['total'] = str(round(my_profit_total, 2))
 
-    print(reports)
+    from pprint import pprint
+    print('***')
+    pprint(reports)
+
     return reports
 
 
