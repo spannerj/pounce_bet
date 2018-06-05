@@ -55,22 +55,25 @@ def get_reports():
     reports = {}
     reports['all'] = {}
     reports['mine'] = {}
-    reports['rating'] = {}
+    reports['rating'] = []
     all_profit_total = 0
     my_profit_total = 0
+    print(reports)
 
     for i, result in enumerate(rating_results[0]):
         print(type(result))
+        rating_profit = str(round(result, 2))
+        d = {}
         if i == 0:
-            filter = '0 - 39'
+            d['0-39'] = rating_profit
         elif i == 1:
-            filter = '40-59'
+            d['40-59'] = rating_profit
         elif i == 2:
-            filter = '60-79'
+            d['60-79'] = rating_profit
         else: 
-            filter = '80-99'
+            d['80-99'] = rating_profit
 
-        reports['rating'][filter] = str(round(result, 2))
+        reports['rating'].append(d)
 
     for result in all_results:
         if result[0].strftime("%Y") in reports['all']:

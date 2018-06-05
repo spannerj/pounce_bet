@@ -107,14 +107,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for filter, profit in report['rating'].items(): %} 
+                        {% for k, v in report['rating']: %} 
                         <tr>
-                            <td>{{ filter }}</td>
-                            {% if "-" in profit: %}
+                            <td>{{ k }}</td>
+                            {% if "-" in v: %}
                                 <td class="text-danger" style="text-align: right">
                             {% else: %}
                                 <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                            {% endif %} {{ ("£" + '%0.2f' % v|float).replace('£-','-£') }}</td>
                         </tr>
                         {% endfor %} 
                     </tbody>
