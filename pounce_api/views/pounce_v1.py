@@ -6,7 +6,7 @@ from datetime import datetime
 # from jsonschema import validate, ValidationError, FormatChecker
 import json
 
-from sqlalchemy import func
+from sqlalchemy import func, case, between
 from sqlalchemy.sql import label
 
 # This is the blueprint object that gets registered into the app in blueprints.py.
@@ -29,7 +29,15 @@ def get_reports():
                                .order_by(yea, mon) \
                                .all()
 
-
+    
+    rate1 = func.sum(case([(between(Pounce.rating, 0, 39), Pounce.profit),], else_ = 0))
+    rate2 = func.sum(case([(between(Pounce.rating, 40, 59), Pounce.profit),], else_ = 0)).label("r2")
+    rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit),], else_ = 0)).label("r3")
+    rate4 = func.sum(case([(between(Pounce.rating, 80, 99), Pounce.profit),], else_ = 0)).label("r4")
+    rating_results = db.session.query(rate1, rate2, rate3, rate4).all()
+    print(rating_results)
+    # print(rating_results.r1)
+   
     # results = db.session.query.filter_by(Pounce.rating>60)
     # q = db.session.query(Pounce).filter(Pounce.rating>60).first()
     # results = q.query(func.sum(Pounce.profit)).all()
@@ -47,8 +55,22 @@ def get_reports():
     reports = {}
     reports['all'] = {}
     reports['mine'] = {}
+    reports['rating'] = {}
     all_profit_total = 0
     my_profit_total = 0
+
+    for i, result in enumerate(rating_results[0]):
+        print(type(result))
+        if i == 0:
+            filter = '0 - 39'
+        elif i == 1:
+            filter = '40-59'
+        elif i == 2:
+            filter = '60-79'
+        else: 
+            filter = '80-99'
+
+        reports['rating'][filter] = str(round(result, 2))
 
     for result in all_results:
         if result[0].strftime("%Y") in reports['all']:
@@ -70,6 +92,7 @@ def get_reports():
 
     reports['mine']['total'] = str(round(my_profit_total, 2))
 
+    print(reports)
     return reports
 
 

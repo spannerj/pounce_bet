@@ -97,7 +97,31 @@
                 </table>
             </div>
 
-            <div class="col-sm-4">
+            <div class="col-sm-3">
+                <h4>Rating totals</h4>
+                <table class="table table-condensed table-bordered table-sm">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Rating</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for filter, profit in report['rating'].items(): %} 
+                        <tr>
+                            <td>{{ filter }}</td>
+                            {% if "-" in profit: %}
+                                <td class="text-danger" style="text-align: right">
+                            {% else: %}
+                                <td class="text-success" style="text-align: right">
+                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-sm-1">
             </div>
         </div>
     </div>
