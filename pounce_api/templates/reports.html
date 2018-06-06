@@ -13,7 +13,7 @@
                         <tr>
                             <th>Year</th>
                             <th>Month</th>
-                            <th>Profit</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,10 +23,10 @@
                             <td>{{ year }}</td>
                             <td>{{ month }}</td>
                             {% if "-" in profit: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
+                                <td class="text-danger" style="text-align: right">
+                            {% else: %}
                                 <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
+                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
                         </tr>
                         {% else: %}
                         <tr>
@@ -59,7 +59,7 @@
                         <tr>
                             <th>Year</th>
                             <th>Month</th>
-                            <th>Profit</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,7 +104,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Rating</th>
-                            <th>Profit</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>

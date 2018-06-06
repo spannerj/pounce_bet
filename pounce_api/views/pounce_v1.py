@@ -3,8 +3,10 @@ from pounce_api.extensions import db
 from pounce_api.models import Pounce
 from pounce_api.exceptions import ApplicationError
 from datetime import datetime
+from pprint import pprint
 # from jsonschema import validate, ValidationError, FormatChecker
 import json
+from collections import OrderedDict
 
 from sqlalchemy import func, case, between
 from sqlalchemy.sql import label
@@ -53,8 +55,8 @@ def get_reports():
     #     # Pounce.rating>60
     # ).scalar()
     reports = {}
-    reports['all'] = {}
-    reports['mine'] = {}
+    reports['all'] = OrderedDict()
+    reports['mine'] = OrderedDict()
     reports['rating'] = []
     all_profit_total = 0
     my_profit_total = 0
@@ -73,27 +75,36 @@ def get_reports():
 
         reports['rating'].append(d)
 
+    pprint(reports['all'])
     for result in all_results:
+        profit = '0'
+        if result[1] is not None:
+            profit = str(round(result[1], 2))   
+
         if result[0].strftime("%Y") in reports['all']:
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
+            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
         else:
-            reports['all'][result[0].strftime("%Y")] = {}
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
-        all_profit_total = all_profit_total + result[1]
+            reports['all'][result[0].strftime("%Y")] = OrderedDict()
+            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+        all_profit_total = all_profit_total + float(profit)
 
     reports['all']['total'] = str(round(all_profit_total, 2))
 
     for result in my_results:
+        profit = '0'
+        if result[1] is not None:
+            profit = str(round(result[1], 2)) 
+
         if result[0].strftime("%Y") in reports['mine']:
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
+            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
         else:
-            reports['mine'][result[0].strftime("%Y")] = {}
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
-        my_profit_total = my_profit_total + result[1]
+            reports['mine'][result[0].strftime("%Y")] = OrderedDict()
+            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+        my_profit_total = my_profit_total + float(profit)
 
     reports['mine']['total'] = str(round(my_profit_total, 2))
 
-    from pprint import pprint
+    
     print('***')
     pprint(reports)
 
