@@ -15,23 +15,78 @@ from sqlalchemy.sql import label
 pounce_v1 = Blueprint('pounce_v1', __name__)
 
 
-def get_reports():
-    # results = Pounce.query.filter_by(func.sum(Pounce.profit)).all()
+def get_all_results():
+
+    all_profit_total = 0
+    all_results = OrderedDict()
     mon = func.date_trunc('month', Pounce.placed)
     yea = func.date_trunc('year', Pounce.placed)
 
-    all_results = db.session.query(mon, func.sum(Pounce.profit)) \
+    db_results = db.session.query(mon, func.sum(Pounce.profit)) \
                                .group_by(yea, mon) \
                                .order_by(yea, mon) \
                                .all()
 
-    my_results = db.session.query(mon, func.sum(Pounce.profit)) \
+    for result in db_results:
+        profit = '0'
+        if result[1] is not None:
+            profit = str(round(result[1], 2))   
+
+        if result[0].strftime("%Y") in all_results:
+            all_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+        else:
+            all_results[result[0].strftime("%Y")] = OrderedDict()
+            all_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+
+        all_profit_total = all_profit_total + float(profit)
+
+    all_results['total'] = str(round(all_profit_total, 2))
+
+    return all_results
+
+
+def get_pounced_results():
+
+    pounced_profit_total = 0
+    pounced_results = OrderedDict()
+
+    mon = func.date_trunc('month', Pounce.placed)
+    yea = func.date_trunc('year', Pounce.placed)
+
+    db_results = db.session.query(mon, func.sum(Pounce.profit)) \
                                .filter(Pounce.pounced==True) \
                                .group_by(yea, mon) \
                                .order_by(yea, mon) \
                                .all()
 
-    
+    for result in db_results:
+        profit = '0'
+        if result[1] is not None:
+            profit = str(round(result[1], 2)) 
+
+        if result[0].strftime("%Y") in pounced_results:
+            pounced_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+        else:
+            pounced_results[result[0].strftime("%Y")] = OrderedDict()
+            pounced_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+        pounced_profit_total = pounced_profit_total + float(profit)
+
+    pounced_results['total'] = str(round(pounced_profit_total, 2))
+
+    pprint(pounced_results)
+
+    return pounced_results
+
+def get_reports():
+    # mon = func.date_trunc('month', Pounce.placed)
+    # yea = func.date_trunc('year', Pounce.placed)
+
+    # my_results = db.session.query(mon, func.sum(Pounce.profit)) \
+    #                            .filter(Pounce.pounced==True) \
+    #                            .group_by(yea, mon) \
+    #                            .order_by(yea, mon) \
+    #                            .all()
+
     rate1 = func.sum(case([(between(Pounce.rating, 0, 39), Pounce.profit),], else_ = 0))
     rate2 = func.sum(case([(between(Pounce.rating, 40, 59), Pounce.profit),], else_ = 0)).label("r2")
     rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit),], else_ = 0)).label("r3")
@@ -55,11 +110,12 @@ def get_reports():
     #     # Pounce.rating>60
     # ).scalar()
     reports = {}
-    reports['all'] = OrderedDict()
-    reports['mine'] = OrderedDict()
+    # reports['mine'] = OrderedDict()
     reports['rating'] = []
-    all_profit_total = 0
-    my_profit_total = 0
+    # my_profit_total = 0
+
+    reports['all'] = get_all_results()
+    reports['pounced'] = get_pounced_results()
 
     for i, result in enumerate(rating_results[0]):
         rating_profit = str(round(result, 2))
@@ -76,37 +132,37 @@ def get_reports():
         reports['rating'].append(d)
 
     pprint(reports['all'])
-    for result in all_results:
-        profit = '0'
-        if result[1] is not None:
-            profit = str(round(result[1], 2))   
+    # for result in all_results:
+    #     profit = '0'
+    #     if result[1] is not None:
+    #         profit = str(round(result[1], 2))   
 
-        if result[0].strftime("%Y") in reports['all']:
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-        else:
-            reports['all'][result[0].strftime("%Y")] = OrderedDict()
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-        all_profit_total = all_profit_total + float(profit)
+    #     if result[0].strftime("%Y") in reports['all']:
+    #         reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+    #     else:
+    #         reports['all'][result[0].strftime("%Y")] = OrderedDict()
+    #         reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+    #     all_profit_total = all_profit_total + float(profit)
 
-    reports['all']['total'] = str(round(all_profit_total, 2))
+    # reports['all']['total'] = str(round(all_profit_total, 2))
 
-    for result in my_results:
-        profit = '0'
-        if result[1] is not None:
-            profit = str(round(result[1], 2)) 
+    # for result in my_results:
+    #     profit = '0'
+    #     if result[1] is not None:
+    #         profit = str(round(result[1], 2)) 
 
-        if result[0].strftime("%Y") in reports['mine']:
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-        else:
-            reports['mine'][result[0].strftime("%Y")] = OrderedDict()
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-        my_profit_total = my_profit_total + float(profit)
+    #     if result[0].strftime("%Y") in reports['mine']:
+    #         reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+    #     else:
+    #         reports['mine'][result[0].strftime("%Y")] = OrderedDict()
+    #         reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+    #     my_profit_total = my_profit_total + float(profit)
 
-    reports['mine']['total'] = str(round(my_profit_total, 2))
+    # reports['mine']['total'] = str(round(my_profit_total, 2))
 
     
-    print('***')
-    pprint(reports)
+    # print('***')
+    # pprint(reports)
 
     return reports
 

@@ -63,7 +63,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for year, months in report['mine'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %}
+                        {% for year, months in report['pounced'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %}
                         {% if loop.index == 1: %}
                         <tr>
                             <td>{{ year }}</td>
