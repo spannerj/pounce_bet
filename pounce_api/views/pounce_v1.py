@@ -15,37 +15,15 @@ from sqlalchemy.sql import label
 pounce_v1 = Blueprint('pounce_v1', __name__)
 
 
-def get_all_results():
+def get_data(pounced=None, sport=None):
 
-    all_profit_total = 0
-    all_results = OrderedDict()
-    mon = func.date_trunc('month', Pounce.placed)
-    yea = func.date_trunc('year', Pounce.placed)
+    queries = []  
 
-    db_results = db.session.query(mon, func.sum(Pounce.profit)) \
-                               .group_by(yea, mon) \
-                               .order_by(yea, mon) \
-                               .all()
+    if pounced is not None:
+        queries.append(Pounce.pounced==True)  
 
-    for result in db_results:
-        profit = '0'
-        if result[1] is not None:
-            profit = str(round(result[1], 2))   
-
-        if result[0].strftime("%Y") in all_results:
-            all_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-        else:
-            all_results[result[0].strftime("%Y")] = OrderedDict()
-            all_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-
-        all_profit_total = all_profit_total + float(profit)
-
-    all_results['total'] = str(round(all_profit_total, 2))
-
-    return all_results
-
-
-def get_pounced_results():
+    if sport is not None:
+        queries.append(Pounce.sport==sport)  
 
     pounced_profit_total = 0
     pounced_results = OrderedDict()
@@ -54,13 +32,15 @@ def get_pounced_results():
     yea = func.date_trunc('year', Pounce.placed)
 
     db_results = db.session.query(mon, func.sum(Pounce.profit)) \
-                               .filter(Pounce.pounced==True) \
+                               .filter(*queries) \
                                .group_by(yea, mon) \
                                .order_by(yea, mon) \
                                .all()
 
     for result in db_results:
+
         profit = '0'
+
         if result[1] is not None:
             profit = str(round(result[1], 2)) 
 
@@ -69,6 +49,7 @@ def get_pounced_results():
         else:
             pounced_results[result[0].strftime("%Y")] = OrderedDict()
             pounced_results[result[0].strftime("%Y")][result[0].strftime("%B")] = profit
+
         pounced_profit_total = pounced_profit_total + float(profit)
 
     pounced_results['total'] = str(round(pounced_profit_total, 2))
@@ -77,45 +58,20 @@ def get_pounced_results():
 
     return pounced_results
 
-def get_reports():
-    # mon = func.date_trunc('month', Pounce.placed)
-    # yea = func.date_trunc('year', Pounce.placed)
 
-    # my_results = db.session.query(mon, func.sum(Pounce.profit)) \
-    #                            .filter(Pounce.pounced==True) \
-    #                            .group_by(yea, mon) \
-    #                            .order_by(yea, mon) \
-    #                            .all()
+def get_ratings(sport=None):
 
+    queries = []
+
+    if sport is not None:
+        queries.append(Pounce.sport==sport)  
+
+    ratings_list = []
     rate1 = func.sum(case([(between(Pounce.rating, 0, 39), Pounce.profit),], else_ = 0))
     rate2 = func.sum(case([(between(Pounce.rating, 40, 59), Pounce.profit),], else_ = 0)).label("r2")
     rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit),], else_ = 0)).label("r3")
     rate4 = func.sum(case([(between(Pounce.rating, 80, 99), Pounce.profit),], else_ = 0)).label("r4")
-    rating_results = db.session.query(rate1, rate2, rate3, rate4).all()
- 
-    # print(rating_results.r1)
-   
-    # results = db.session.query.filter_by(Pounce.rating>60)
-    # q = db.session.query(Pounce).filter(Pounce.rating>60).first()
-    # results = q.query(func.sum(Pounce.profit)).all()
-
-
-    # queries = [Pounce.rating > 60]
-    # queries.append(Pounce.sport=="Tennis")
-
-    # results = db.session.query(
-    #     func.sum(Pounce.profit)
-    # ).filter(
-    #     *queries
-    #     # Pounce.rating>60
-    # ).scalar()
-    reports = {}
-    # reports['mine'] = OrderedDict()
-    reports['rating'] = []
-    # my_profit_total = 0
-
-    reports['all'] = get_all_results()
-    reports['pounced'] = get_pounced_results()
+    rating_results = db.session.query(rate1, rate2, rate3, rate4).filter(*queries).all()
 
     for i, result in enumerate(rating_results[0]):
         rating_profit = str(round(result, 2))
@@ -129,40 +85,22 @@ def get_reports():
         else: 
             d['80-99'] = rating_profit
 
-        reports['rating'].append(d)
+        ratings_list.append(d)
 
-    pprint(reports['all'])
-    # for result in all_results:
-    #     profit = '0'
-    #     if result[1] is not None:
-    #         profit = str(round(result[1], 2))   
+    return ratings_list
 
-    #     if result[0].strftime("%Y") in reports['all']:
-    #         reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-    #     else:
-    #         reports['all'][result[0].strftime("%Y")] = OrderedDict()
-    #         reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-    #     all_profit_total = all_profit_total + float(profit)
+def get_reports():
 
-    # reports['all']['total'] = str(round(all_profit_total, 2))
-
-    # for result in my_results:
-    #     profit = '0'
-    #     if result[1] is not None:
-    #         profit = str(round(result[1], 2)) 
-
-    #     if result[0].strftime("%Y") in reports['mine']:
-    #         reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-    #     else:
-    #         reports['mine'][result[0].strftime("%Y")] = OrderedDict()
-    #         reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = profit
-    #     my_profit_total = my_profit_total + float(profit)
-
-    # reports['mine']['total'] = str(round(my_profit_total, 2))
-
-    
-    # print('***')
-    # pprint(reports)
+    reports = {}
+    reports['rating'] = get_ratings()
+    reports['all'] = get_data()
+    reports['pounced'] = get_data(pounced=True)
+    reports['tennis'] = get_data()
+    reports['football'] = get_data(sport='Football')
+    reports['tennis_ratings'] = get_ratings(sport='Tennis')
+    reports['football_ratings'] = get_ratings(sport='Football')
+ 
+    pprint(reports)
 
     return reports
 
