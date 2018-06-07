@@ -9,6 +9,7 @@ index = Blueprint('index', __name__)
 @index.route("/reports", methods=['GET'])
 def reports():
     report = get_reports()
+    # return json.dumps(report)
     return render_template('reports.html', report=report)
 
 

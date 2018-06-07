@@ -3,96 +3,108 @@ from pounce_api.extensions import db
 from pounce_api.models import Pounce
 from pounce_api.exceptions import ApplicationError
 from datetime import datetime
+from pprint import pprint
 # from jsonschema import validate, ValidationError, FormatChecker
 import json
-
+from collections import OrderedDict
 from sqlalchemy import func, case, between
-from sqlalchemy.sql import label
 
 # This is the blueprint object that gets registered into the app in blueprints.py.
 pounce_v1 = Blueprint('pounce_v1', __name__)
 
 
-def get_reports():
-    # results = Pounce.query.filter_by(func.sum(Pounce.profit)).all()
+def get_data(pounced=None, sport=None):
+
+    queries = []
+
+    if pounced is not None:
+        queries.append(Pounce.pounced == True)
+
+    if sport is not None:
+        queries.append(Pounce.sport == sport)
+
+    pounced_profit_total = 0
+    pounced_results = OrderedDict()
+
     mon = func.date_trunc('month', Pounce.placed)
     yea = func.date_trunc('year', Pounce.placed)
 
-    all_results = db.session.query(mon, func.sum(Pounce.profit)) \
-                               .group_by(yea, mon) \
-                               .order_by(yea, mon) \
-                               .all()
+    db_results = db.session.query(mon, func.sum(Pounce.profit)) \
+        .filter(*queries) \
+        .group_by(yea, mon) \
+        .order_by(yea, mon) \
+        .all()
 
-    my_results = db.session.query(mon, func.sum(Pounce.profit)) \
-                               .filter(Pounce.pounced==True) \
-                               .group_by(yea, mon) \
-                               .order_by(yea, mon) \
-                               .all()
+    for result in db_results:
 
-    
-    rate1 = func.sum(case([(between(Pounce.rating, 0, 39), Pounce.profit),], else_ = 0))
-    rate2 = func.sum(case([(between(Pounce.rating, 40, 59), Pounce.profit),], else_ = 0)).label("r2")
-    rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit),], else_ = 0)).label("r3")
-    rate4 = func.sum(case([(between(Pounce.rating, 80, 99), Pounce.profit),], else_ = 0)).label("r4")
-    rating_results = db.session.query(rate1, rate2, rate3, rate4).all()
-    print(rating_results)
-    # print(rating_results.r1)
-   
-    # results = db.session.query.filter_by(Pounce.rating>60)
-    # q = db.session.query(Pounce).filter(Pounce.rating>60).first()
-    # results = q.query(func.sum(Pounce.profit)).all()
+        profit = '0'
+
+        if result[1] is not None:
+            profit = str(round(result[1], 2))
+
+        if result[0].strftime("%Y") in pounced_results:
+            pounced_results[result[0].strftime("%Y")][result[0].strftime("%B")] = format_profit(profit)
+        else:
+            pounced_results[result[0].strftime("%Y")] = OrderedDict()
+            pounced_results[result[0].strftime("%Y")][result[0].strftime("%B")] = format_profit(profit)
+
+        pounced_profit_total = pounced_profit_total + float(profit)
+
+    pounced_results['total'] = format_profit(pounced_profit_total)
+
+    return pounced_results
 
 
-    # queries = [Pounce.rating > 60]
-    # queries.append(Pounce.sport=="Tennis")
+def get_ratings(sport=None):
 
-    # results = db.session.query(
-    #     func.sum(Pounce.profit)
-    # ).filter(
-    #     *queries
-    #     # Pounce.rating>60
-    # ).scalar()
-    reports = {}
-    reports['all'] = {}
-    reports['mine'] = {}
-    reports['rating'] = {}
-    all_profit_total = 0
-    my_profit_total = 0
+    ratings_dict = OrderedDict()
+    queries = []
 
+    if sport is not None:
+        queries.append(Pounce.sport == sport)
+
+    rate1 = func.sum(case([(between(Pounce.rating, 0, 39), Pounce.profit), ], else_=0))
+    rate2 = func.sum(case([(between(Pounce.rating, 40, 59), Pounce.profit), ], else_=0)).label("r2")
+    rate3 = func.sum(case([(between(Pounce.rating, 60, 79), Pounce.profit), ], else_=0)).label("r3")
+    rate4 = func.sum(case([(between(Pounce.rating, 80, 99), Pounce.profit), ], else_=0)).label("r4")
+    rating_results = db.session.query(rate1, rate2, rate3, rate4).filter(*queries).all()
+
+    # print(rating_results)
     for i, result in enumerate(rating_results[0]):
-        print(type(result))
+        rating_profit = str(round(result, 2))
         if i == 0:
-            filter = '0 - 39'
+            ratings_dict['0-39'] = format_profit(rating_profit)
         elif i == 1:
-            filter = '40-59'
+            ratings_dict['40-59'] = format_profit(rating_profit)
         elif i == 2:
-            filter = '60-79'
-        else: 
-            filter = '80-99'
-
-        reports['rating'][filter] = str(round(result, 2))
-
-    for result in all_results:
-        if result[0].strftime("%Y") in reports['all']:
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
+            ratings_dict['60-79'] = format_profit(rating_profit)
         else:
-            reports['all'][result[0].strftime("%Y")] = {}
-            reports['all'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
-        all_profit_total = all_profit_total + result[1]
+            ratings_dict['80-99'] = format_profit(rating_profit)
 
-    reports['all']['total'] = str(round(all_profit_total, 2))
+    return ratings_dict
 
-    for result in my_results:
-        if result[0].strftime("%Y") in reports['mine']:
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
-        else:
-            reports['mine'][result[0].strftime("%Y")] = {}
-            reports['mine'][result[0].strftime("%Y")][result[0].strftime("%B")] = str(round(result[1], 2))
-        my_profit_total = my_profit_total + result[1]
 
-    reports['mine']['total'] = str(round(my_profit_total, 2))
+def format_profit(profit):
+    return ("£" + '%0.2f' % float(profit)).replace('£-', '-£')
 
-    print(reports)
+
+def build_dict(sport=None):
+    result_dict = {}
+    result_dict['all'] = get_data(sport=sport)
+    result_dict['pounced'] = get_data(pounced=True, sport=sport)
+    result_dict['rating'] = get_ratings(sport=sport)
+    return result_dict
+
+
+def get_reports():
+
+    reports = {}
+    reports['totals'] = build_dict()
+    reports['tennis'] = build_dict('Tennis')
+    reports['football'] = build_dict('Football')
+
+    # pprint(reports)
+
     return reports
 
 
