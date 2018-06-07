@@ -2,120 +2,134 @@
 <div class="bootstrap-iso">
     <div class="container-fluid">
         <br>
+        <h4>Totals</h4>
         <div class="row">
             <div class="col-sm-1">
             </div>
             <div class="col-sm-3">
-                <h4>All pounce totals</h4>
+                <h4>All pounces</h4>
                 <table class="table table-condensed table-bordered table-sm">
                     <thead class="thead-light">
                         <tr>
                             <th>Year</th>
                             <th>Month</th>
-                            <th>Profit</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for year, months in report['all'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %} {%
-                        if loop.index == 1: %}
-                        <tr>
-                            <td>{{ year }}</td>
-                            <td>{{ month }}</td>
-                            {% if "-" in profit: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
-                                <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% else: %}
-                        <tr>
-                            <td></td>
-                            <td>{{ month }}</td>
-                            {% if "-" in profit: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
-                                <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% endif %} {% endfor %} {% else: %}
-                        <tr>
-                            <td colspan="2">Total Profit</td>
-                            {% if "-" in months: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
-                                <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% endif %} {% endfor %}
+                        {% for year, months in report['totals']['all'].items(): %} 
+                            {% if months is mapping: %} 
+                                {% for month, profit in months.items(): %} 
+                                    {% if loop.index == 1: %}
+                                        <tr>
+                                            <td>{{ year }}</td>
+                                            <td>{{ month }}</td>
+                                            {% if "-" in profit: %}
+                                                <td class="text-danger" style="text-align: right">
+                                            {% else: %}
+                                                <td class="text-success" style="text-align: right">
+                                            {% endif %} {{ profit}}</td>
+                                        </tr>
+                                    {% else: %}
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ month }}</td>
+                                            {% if "-" in profit: %}
+                                            <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                <td class="text-success" style="text-align: right">
+                                                    {% endif %} {{ profit }}</td>
+                                        </tr>
+                                    {% endif %} 
+                                {% endfor %} 
+                            {% else: %}
+                                <tr>
+                                    <td colspan="2">Total Profit</td>
+                                    {% if "-" in months: %}
+                                        <td class="text-danger" style="text-align: right">
+                                    {% else: %}
+                                        <td class="text-success" style="text-align: right">
+                                    {% endif %} 
+                                    {{ months }}</td>
+                                </tr>
+                            {% endif %} 
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-
             <div class="col-sm-3">
-                <h4>My pounce totals</h4>
+                <h4>Pounced</h4>
                 <table class="table table-condensed table-bordered table-sm">
                     <thead class="thead-light">
                         <tr>
                             <th>Year</th>
                             <th>Month</th>
-                            <th>Profit</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for year, months in report['mine'].items(): %} {% if months is mapping: %} {% for month, profit in months.items(): %}
-                        {% if loop.index == 1: %}
-                        <tr>
-                            <td>{{ year }}</td>
-                            <td>{{ month }}</td>
-                            {% if "-" in profit: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
                                 <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% else: %}
-                        <tr>
-                            <td></td>
-                            <td>{{ month }}</td>
-                            {% if "-" in profit: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
-                                <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% endif %} {% endfor %} {% else: %}
-                        <tr>
-                            <td colspan="2">Total Profit</td>
-                            {% if "-" in months: %}
-                            <td class="text-danger" style="text-align: right">
-                                {% else: %}
-                                <td class="text-success" style="text-align: right">
-                                    {% endif %} {{ ("£" + '%0.2f' % months|float).replace('£-','-£') }}</td>
-                        </tr>
-                        {% endif %} {% endfor %}
+                        {% for year, months in report['totals']['pounced'].items(): %} 
+                            {% if months is mapping: %} 
+                                {% for month, profit in months.items(): %}
+                                    {% if loop.index == 1: %}
+                                        <tr>
+                                            <td>{{ year }}</td>
+                                            <td>{{ month }}</td>
+                                            {% if "-" in profit: %}
+                                                <td class="text-danger" style="text-align: right">
+                                            {% else: %}
+                                                <td class="text-success" style="text-align: right">
+                                            {% endif %} 
+                                            {{ profit }}</td>
+                                        </tr>
+                                    {% else: %}
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ month }}</td>
+                                            {% if "-" in profit: %}
+                                                <td class="text-danger" style="text-align: right">
+                                            {% else: %}
+                                                <td class="text-success" style="text-align: right">
+                                            {% endif %} 
+                                            {{ profit }}</td>
+                                        </tr>
+                                    {% endif %} 
+                                {% endfor %} 
+                            {% else: %}
+                                <tr>
+                                    <td colspan="2">Total Profit</td>
+                                    {% if "-" in months: %}
+                                        <td class="text-danger" style="text-align: right">
+                                    {% else: %}
+                                        <td class="text-success" style="text-align: right">
+                                    {% endif %} 
+                                    {{ months }}</td>
+                                </tr>
+                            {% endif %} 
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-
             <div class="col-sm-3">
                 <h4>Rating totals</h4>
                 <table class="table table-condensed table-bordered table-sm">
                     <thead class="thead-light">
                         <tr>
-                            <th>Rating</th>
-                            <th>Profit</th>
+                            <th>Ratings</th>
+                            <th style="text-align: right">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for filter, profit in report['rating'].items(): %} 
-                        <tr>
-                            <td>{{ filter }}</td>
-                            {% if "-" in profit: %}
-                                <td class="text-danger" style="text-align: right">
-                            {% else: %}
-                                <td class="text-success" style="text-align: right">
-                            {% endif %} {{ ("£" + '%0.2f' % profit|float).replace('£-','-£') }}</td>
-                        </tr>
+                        {% for k, v in report['totals']['rating'].items(): %} 
+                            <tr>
+                                <td>{{ k }}</td>
+                                {% if "-" in v: %}
+                                    <td class="text-danger" style="text-align: right">
+                                {% else: %}
+                                    <td class="text-success" style="text-align: right">
+                                {% endif %} {{ v }}</td>
+                            </tr>
                         {% endfor %} 
                     </tbody>
                 </table>
@@ -124,6 +138,278 @@
             <div class="col-sm-1">
             </div>
         </div>
+ 
+        <h4>Tennis</h4>
+        <div class="row">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-3">
+                    <h4>All pounces</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year, months in report['tennis']['all'].items(): %} 
+                                {% if months is mapping: %} 
+                                    {% for month, profit in months.items(): %} 
+                                        {% if loop.index == 1: %}
+                                            <tr>
+                                                <td>{{ year }}</td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} {{ profit}}</td>
+                                            </tr>
+                                        {% else: %}
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                <td class="text-danger" style="text-align: right">
+                                                    {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                        {% endif %} {{ profit }}</td>
+                                            </tr>
+                                        {% endif %} 
+                                    {% endfor %} 
+                                {% else: %}
+                                    <tr>
+                                        <td colspan="2">Total Profit</td>
+                                        {% if "-" in months: %}
+                                            <td class="text-danger" style="text-align: right">
+                                        {% else: %}
+                                            <td class="text-success" style="text-align: right">
+                                        {% endif %} 
+                                        {{ months }}</td>
+                                    </tr>
+                                {% endif %} 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Pounced</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year, months in report['tennis']['pounced'].items(): %} 
+                                {% if months is mapping: %} 
+                                    {% for month, profit in months.items(): %}
+                                        {% if loop.index == 1: %}
+                                            <tr>
+                                                <td>{{ year }}</td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} 
+                                                {{ profit }}</td>
+                                            </tr>
+                                        {% else: %}
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} 
+                                                {{ profit }}</td>
+                                            </tr>
+                                        {% endif %} 
+                                    {% endfor %} 
+                                {% else: %}
+                                    <tr>
+                                        <td colspan="2">Total Profit</td>
+                                        {% if "-" in months: %}
+                                            <td class="text-danger" style="text-align: right">
+                                        {% else: %}
+                                            <td class="text-success" style="text-align: right">
+                                        {% endif %} 
+                                        {{ months }}</td>
+                                    </tr>
+                                {% endif %} 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Rating totals</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Ratings</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for k, v in report['tennis']['rating'].items(): %} 
+                                <tr>
+                                    <td>{{ k }}</td>
+                                    {% if "-" in v: %}
+                                        <td class="text-danger" style="text-align: right">
+                                    {% else: %}
+                                        <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ v }}</td>
+                                </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="col-sm-1">
+                </div>
+            </div>
+ 
+        <h4>Football</h4>
+        <div class="row">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-3">
+                    <h4>All pounces</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year, months in report['football']['all'].items(): %} 
+                                {% if months is mapping: %} 
+                                    {% for month, profit in months.items(): %} 
+                                        {% if loop.index == 1: %}
+                                            <tr>
+                                                <td>{{ year }}</td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} {{ profit}}</td>
+                                            </tr>
+                                        {% else: %}
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                <td class="text-danger" style="text-align: right">
+                                                    {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                        {% endif %} {{ profit }}</td>
+                                            </tr>
+                                        {% endif %} 
+                                    {% endfor %} 
+                                {% else: %}
+                                    <tr>
+                                        <td colspan="2">Total Profit</td>
+                                        {% if "-" in months: %}
+                                            <td class="text-danger" style="text-align: right">
+                                        {% else: %}
+                                            <td class="text-success" style="text-align: right">
+                                        {% endif %} 
+                                        {{ months }}</td>
+                                    </tr>
+                                {% endif %} 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Pounced</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Month</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for year, months in report['football']['pounced'].items(): %} 
+                                {% if months is mapping: %} 
+                                    {% for month, profit in months.items(): %}
+                                        {% if loop.index == 1: %}
+                                            <tr>
+                                                <td>{{ year }}</td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} 
+                                                {{ profit }}</td>
+                                            </tr>
+                                        {% else: %}
+                                            <tr>
+                                                <td></td>
+                                                <td>{{ month }}</td>
+                                                {% if "-" in profit: %}
+                                                    <td class="text-danger" style="text-align: right">
+                                                {% else: %}
+                                                    <td class="text-success" style="text-align: right">
+                                                {% endif %} 
+                                                {{ profit }}</td>
+                                            </tr>
+                                        {% endif %} 
+                                    {% endfor %} 
+                                {% else: %}
+                                    <tr>
+                                        <td colspan="2">Total Profit</td>
+                                        {% if "-" in months: %}
+                                            <td class="text-danger" style="text-align: right">
+                                        {% else: %}
+                                            <td class="text-success" style="text-align: right">
+                                        {% endif %} 
+                                        {{ months }}</td>
+                                    </tr>
+                                {% endif %} 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Rating totals</h4>
+                    <table class="table table-condensed table-bordered table-sm">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Ratings</th>
+                                <th style="text-align: right">Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for k, v in report['football']['rating'].items(): %} 
+                                <tr>
+                                    <td>{{ k }}</td>
+                                    {% if "-" in v: %}
+                                        <td class="text-danger" style="text-align: right">
+                                    {% else: %}
+                                        <td class="text-success" style="text-align: right">
+                                    {% endif %} {{ v }}</td>
+                                </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                </div>
+    
+                <div class="col-sm-1">
+                </div>
+            </div>
     </div>
 </div>
 

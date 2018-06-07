@@ -14,8 +14,8 @@
                             <th>Bet</th>
                             <th>Rating</th>
                             <th>Pounced</th>
-                            <th>Profit</th>
-                            <th>Edit</th>
+                            <th style="text-align: right">Profit</th>
+                            <th style="text-align: right">Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,14 +26,15 @@
                             <td>{{ pounce['bet'] }}</td>
                             <td>{{ pounce['rating'] }}</td>
                             <td>{{ pounce['pounced'] }}</td>
-                            {% if pounce['profit'] != "None": %}
-                            <td>{{ ("£" + '%0.2f' % pounce['profit']|float).replace('£-','-£') }}</td>
+                            {% if "-" in pounce['profit']: %}
+                                <td class="text-danger col-md-1" style="text-align: right">
                             {% else: %}
-                            <td></td>
-                            {% endif %}
-                            <td>
+                                <td class="text-success col-md-1" style="text-align: right">
+                            {% endif %} {{ ("£" + '%0.2f' % pounce['profit']|float).replace('£-','-£') }}</td>
+
+                            <td style="text-align: right">
                                 <a href="/edit-pounce?id={{ pounce['id'] }}">
-                                    <i class="fa fa-edit"></i>
+                                    <i class="fa fa-edit" ></i>
                                 </a>
                             </td>
                         </tr>

@@ -54,7 +54,6 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-
     # this callback is used to prevent an auto-migration from being generated
     # when there are no changes to the schema
     # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
@@ -64,6 +63,7 @@ def run_migrations_online():
             if script.upgrade_ops.is_empty():
                 directives[:] = []
                 logger.info('No changes in schema detected.')
+
 
     engine = engine_from_config(config.get_section(config.config_ini_section),
                                 prefix='sqlalchemy.',
