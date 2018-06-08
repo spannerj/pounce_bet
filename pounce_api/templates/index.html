@@ -33,7 +33,7 @@
                             {% endif %} {{ ("£" + '%0.2f' % pounce['profit']|float).replace('£-','-£') }}</td>
 
                             <td style="text-align: right">
-                                <a href="/edit-pounce?id={{ pounce['id'] }}">
+                                <a href="/edit-pounce?id={{ pounce['id'] }}&page={{ curr_page }}">
                                     <i class="fa fa-edit" ></i>
                                 </a>
                             </td>
