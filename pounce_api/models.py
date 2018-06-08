@@ -35,10 +35,6 @@ class Pounce(db.Model):
         return json.dumps(self.as_dict(), separators=(',', ':'))
 
     def as_dict(self):
-        # if self.updated_at:
-        #     placed = self.placed.isoformat()
-        # else:
-        #     placed = self.placed
         fmt = '%d-%m-%Y'
         placed = self.placed.strftime(fmt)
 

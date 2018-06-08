@@ -8,7 +8,7 @@
             <div class="col-sm-1">
             </div>
             <div class="col-sm-8">
-                <form class="form-horizontal" action="/edit-pounce?id={{ pounce.id }}" method="post">
+                <form class="form-horizontal" action="/edit-pounce?id={{ pounce.id }}&page={{ request.args.get('page') }}" method="post">
                     <div class="form-group ">
                         <label class="control-label col-sm-2 requiredField" for="placed">Placed</label>
                         <div class="col-sm-10">

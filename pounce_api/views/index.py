@@ -66,7 +66,7 @@ def edit_pounce():
         fd = request.form.to_dict()
         fd['id'] = args['id']
         update_pounce(fd)
-        return redirect(url_for('index.index_page'))
+        return redirect(url_for('index.index_page', page=args['page']))
 
 
 @index.route('/delete-pounce', methods=['POST'])
