@@ -3,8 +3,6 @@ from pounce_api.extensions import db
 from pounce_api.models import Pounce
 from pounce_api.exceptions import ApplicationError
 from datetime import datetime
-from pprint import pprint
-# from jsonschema import validate, ValidationError, FormatChecker
 import json
 from collections import OrderedDict
 from sqlalchemy import func, case, between
@@ -18,7 +16,7 @@ def get_data(pounced=None, sport=None):
     queries = []
 
     if pounced is not None:
-        queries.append(Pounce.pounced == True)
+        queries.append(Pounce.pounced is True)
 
     if sport is not None:
         queries.append(Pounce.sport == sport)
