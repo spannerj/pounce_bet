@@ -24,7 +24,7 @@ psycopg2==2.7.1
 python-dateutil==2.7.5    # via alembic
 python-editor==1.0.3      # via alembic
 pyyaml==3.13              # via logconfig
-requests==2.19.1
+requests==2.20
 six==1.11.0               # via python-dateutil
 sqlalchemy==1.2.14        # via alembic, flask-sqlalchemy
 werkzeug==0.14.1          # via flask
