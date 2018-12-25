@@ -16,7 +16,7 @@ def get_data(pounced=None, sport=None):
     queries = []
 
     if pounced is not None:
-        queries.append(Pounce.pounced is True)
+        queries.append(Pounce.pounced.is_(True))
 
     if sport is not None:
         queries.append(Pounce.sport == sport)
@@ -101,6 +101,7 @@ def get_reports():
     reports['tennis'] = build_dict('Tennis')
     reports['football'] = build_dict('Football')
 
+    # from pprint import pprint
     # pprint(reports)
 
     return reports

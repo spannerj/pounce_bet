@@ -68,7 +68,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                                <td class="text-success" style="text-align: right">
                         {% for year, months in report['totals']['pounced'].items(): %} 
                             {% if months is mapping: %} 
                                 {% for month, profit in months.items(): %}
